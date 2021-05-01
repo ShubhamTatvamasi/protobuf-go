@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/ShubhamTatvamasi/protobuf-go/pkg/simple"
+	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 )
 
@@ -13,7 +14,34 @@ func main() {
 
 	sm := doSimple()
 
-	readAndWriteDemo(sm)
+	// readAndWriteDemo(sm)
+	jsonDemo(sm)
+
+}
+
+func jsonDemo(sm proto.Message) {
+	smAsJson := toJSON(sm)
+
+	fmt.Println(smAsJson)
+
+	sm2 := &simple.SimpleMessage{}
+	fromJSON(smAsJson, sm2)
+	fmt.Println("Created proto buf", sm2)
+
+}
+
+func toJSON(pb proto.Message) string {
+
+	marshaler := jsonpb.Marshaler{}
+	out, _ := marshaler.MarshalToString(pb)
+	return out
+}
+
+func fromJSON(in string, pb proto.Message) {
+
+	if err := jsonpb.UnmarshalString(in, pb); err != nil {
+		log.Fatal(nil)
+	}
 
 }
 
